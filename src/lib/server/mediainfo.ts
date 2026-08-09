@@ -1,7 +1,7 @@
 import { file, type BunFile } from 'bun';
 import { mediaInfoFactory } from 'mediainfo.js';
 import type { AudioTrack, GeneralTrack, ImageTrack, MenuTrack, OtherTrack, ReadChunkFunc, TextTrack, Track, VideoTrack } from 'mediainfo.js';
-import { basename } from 'node:path';
+import { basename, join } from 'node:path';
 import errorString from './util/error-string';
 import { pauseHashing, resumeHashing } from './torrent';
 import { log } from './util/log';
@@ -35,6 +35,11 @@ export class MediaInfo {
             const mediaInfo = await mediaInfoFactory({
                 format: outputFormat === 'text' ? 'text' : 'object',
                 full: outputFormat !== 'text',
+                // In the packaged executable the wasm is extracted to a temp
+                // dir (see packaging/entry.ts); point locateFile at it.
+                locateFile: process.env.AK_NATIVE_DIR
+                    ? (path: string) => join(process.env.AK_NATIVE_DIR!, 'wasm', path)
+                    : undefined,
             });
 
             const readChunk: ReadChunkFunc = async (size, offset) => {

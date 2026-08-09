@@ -93,3 +93,28 @@ services:
 - Needs a pretty clean scene or P2P filename to work because the checker for
   data in the filename is a whitelist.
 - No support for full discs yet.
+## Single-file executable (macOS)
+
+A single-file macOS executable is available in the `packaging/` directory. It
+embeds the Bun runtime, the app, all client assets, and the native tools the
+app shells out to (ffmpeg, ffprobe, mkbrr) plus the native libraries sharp and
+mediainfo.js need. Run it directly — no Bun, Node, or npm install required:
+
+```
+./ak-automated-uploader
+```
+
+It listens on http://127.0.0.1:51901 by default (override with `PORT`/`HOST`/
+`ORIGIN` env vars). Settings are stored in
+`~/Library/Preferences/ak-automated-uploader/`. The first time it runs it
+extracts the embedded native tools to a temp directory.
+
+To build it yourself:
+
+```bash
+./packaging/fetch-third-party.sh   # downloads ffmpeg/ffprobe/mkbrr binaries
+bun run packaging/build-executable.ts
+```
+
+The executable is written to `dist/ak-automated-uploader` and ad-hoc
+codesigned for macOS arm64.
