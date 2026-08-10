@@ -7,12 +7,13 @@ import { tmpdir } from 'node:os';
 import { randomUUID } from 'node:crypto';
 import { pauseHashing, resumeHashing } from './torrent';
 import { log } from './util/log';
+import { nativeTool } from './util/native-tools';
 
 const RETAKE_THRESHOLD = 80 * 1024;
 const RETAKE_ATTEMPTS = 5;
 
-let ffprobePath = 'ffprobe';
-let ffmpegPath = 'ffmpeg';
+let ffprobePath = nativeTool('ffprobe');
+let ffmpegPath = nativeTool('ffmpeg');
 const queue = new PQueue({ concurrency: 1 });
 const allScreenshots: Screenshots[] = [];
 

@@ -6,6 +6,7 @@ import { basename, dirname, join } from 'node:path';
 import PQueue from 'p-queue';
 import errorString from './util/error-string';
 import { log } from './util/log';
+import { nativeTool } from './util/native-tools';
 
 /* Platform-specific suspend/resume
    mkbrr hits the disk really hard, so we'll pause it whenever we need it for
@@ -147,7 +148,7 @@ export default class Torrent {
             log(`Starting hashing for ${basename(this._contentPath)}`);
 
             this.mkbrr = spawn([
-                'mkbrr',
+                nativeTool('mkbrr'),
                 'create', this._contentPath,
                 '--output', this.torrentPath,
                 '--private',
@@ -203,7 +204,7 @@ export default class Torrent {
                 pauseHashing();
 
                 const mkbrr = spawn([
-                    'mkbrr', 'modify',
+                    nativeTool('mkbrr'), 'modify',
                     '--output-dir', dirname(editedTorrentPath),
                     '--output', basename(editedTorrentPath, '.torrent'),
                     '--tracker', announce,
