@@ -136,7 +136,7 @@ export default class Screenshots {
         options = [
             ffprobePath,
             '-v', 'error',
-            '-output_format', 'json',
+            '-of', 'json',
             ...options
         ];
 
