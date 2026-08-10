@@ -167,6 +167,8 @@ export default class Screenshots {
 
             for (const { video, count } of requests) {
 
+                if (count <= 0) continue;
+
                 log(`Taking ${count} screenshots of ${basename(video)}`);
 
                 await this.isVideo(video);

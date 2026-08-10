@@ -1,6 +1,7 @@
 import { readdir } from 'node:fs/promises';
 import { basename, dirname, join, normalize, relative } from 'node:path';
 import errorString from './util/error-string';
+import { isVideoPath } from './util/video-extensions';
 import { file } from 'bun';
 
 const DEFAULT_SCREENSHOT_COUNT = 6;
@@ -64,15 +65,17 @@ export default class Files {
     private async addFile(path: string) {
 
         path = normalize(path);
-        
+
+        const isVideo = isVideoPath(path);
+
         this.files.push({
             name: relative(this.directory, path),
             path: path,
-            screenshots: this.firstScreenshotSet ? 0 : DEFAULT_SCREENSHOT_COUNT,
+            screenshots: isVideo && !this.firstScreenshotSet ? DEFAULT_SCREENSHOT_COUNT : 0,
         });
 
-        if (!this._mediaInfoFile) this._mediaInfoFile = path;
-        this.firstScreenshotSet = true;
+        if (!this._mediaInfoFile && isVideo) this._mediaInfoFile = path;
+        if (isVideo) this.firstScreenshotSet = true;
 
     }
 
